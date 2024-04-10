@@ -1,0 +1,71 @@
+from operator import itemgetter
+
+class Emp:
+    """Файл"""
+    def __init__(self, id, name, size, dep_id):
+        self.id = id
+        self.name = name
+        self.size = size
+        self.dep_id = dep_id
+
+class Dep:
+    """Каталог файлов"""
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+# Каталоги файлов
+deps = [
+    Dep(1, 'Фотографии'),
+    Dep(2, 'Музыка'),
+    Dep(3, 'Документы'),
+    Dep(4, 'Видео'),
+    Dep(5, 'Презентации'),
+    Dep(6, 'Текстовые документы'),
+]
+
+# Сотрудники
+emps = [
+    Emp(1, 'Обои', 350, 1),
+    Emp(2, 'Пятая симфония Чайковского', 3500, 2),
+    Emp(3, 'Резюме', 450, 3),
+    Emp(4, 'Договор', 500, 3),
+    Emp(5, 'Выпускной', 35000, 4),
+    Emp(6, 'Доклад', 8500, 5),
+    Emp(7, 'Дневник', 85, 6),
+]
+
+
+def main():
+
+    # Соединение данных один-ко-многим 
+    one_to_many = [(e.name, e.size, d.name) 
+        for d in deps 
+        for e in emps 
+        if e.dep_id==d.id]
+    
+    print('Задание 1')
+    res_11 = sorted(one_to_many, key=itemgetter(2))
+    print(res_11)
+    
+    print('\nЗадание 2')
+    res_12_unsorted = []
+    # Перебираем все каталоги
+    for d in deps:
+        # Список файлов
+        d_emps = list(filter(lambda i: i[2]==d.name, one_to_many))
+        # Если каталог не пустой      
+        if len(d_emps) > 0:
+            # размеры файлов
+            d_sals = [sal for _,sal,_ in d_emps]
+            # Суммарный размер каталога файлов
+            d_sals_sum = sum(d_sals)
+            res_12_unsorted.append((d.name, d_sals_sum))
+
+    # Сортировка по размеру каталога
+    res_12 = sorted(res_12_unsorted, key=itemgetter(1), reverse=True)
+    print(res_12)
+
+
+if __name__ == '__main__':
+    main()
